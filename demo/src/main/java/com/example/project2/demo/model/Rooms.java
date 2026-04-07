@@ -33,7 +33,7 @@ public class Rooms {
 
     private List<LocalDateTime> reserved;
 
-    @OneToMany(mappedBy="room", cascade=CascadeType.ALL)
+    @OneToMany(mappedBy="rooms", cascade=CascadeType.ALL)
     private List<Features> features = new ArrayList<>();
 
     public Long getId() {
