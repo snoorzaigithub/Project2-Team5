@@ -1,37 +1,35 @@
 package com.example.project2.demo.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 @Entity
-public class user {
+@Table(name = "users")
+public class User {
+
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
+    @Column(nullable = false, unique = true)
     private String username;
-    
+
+    @Column(nullable = false)
     private String password;
 
-    //Simple check to see if someone is an admin or not
-    private boolean admin;
+    @Column(nullable = false)
+    private String role;
 
-    @OneToMany(mappedBy="user", cascade=CascadeType.ALL)
-    private List<Rooms> reservations = new ArrayList<>();
-
-    public String getPassword() {
-        return password;
+    public User() {
     }
 
-    public void setPassword(String password) {
+    public User(String username, String password, String role) {
+        this.username = username;
         this.password = password;
+        this.role = role;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getUsername() {
@@ -42,27 +40,19 @@ public class user {
         this.username = username;
     }
 
-    public List<Rooms> getReservations() {
-        return reservations;
+    public String getPassword() {
+        return password;
     }
 
-    public void setReservations(List<Rooms> reservations) {
-        this.reservations = reservations;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public Long getId() {
-        return id;
+    public String getRole() {
+        return role;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public boolean isAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
+    public void setRole(String role) {
+        this.role = role;
     }
 }

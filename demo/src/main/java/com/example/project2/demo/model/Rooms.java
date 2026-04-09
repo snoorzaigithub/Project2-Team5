@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,25 +16,24 @@ import jakarta.persistence.OneToMany;
 
 @Entity
 public class Rooms {
+
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
-    private user user;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     private int numberOfSeats;
 
-    //List of times that the room isnt taken
+    @ElementCollection
+    private List<LocalDateTime> notreserved = new ArrayList<>();
 
-    private List<LocalDateTime> notreserved;
+    @ElementCollection
+    private List<LocalDateTime> reserved = new ArrayList<>();
 
-    // List of times the room is taken 
-
-    private List<LocalDateTime> reserved;
-
-    @OneToMany(mappedBy="rooms", cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "rooms", cascade = CascadeType.ALL)
     private List<Features> features = new ArrayList<>();
 
     public Long getId() {
@@ -44,11 +44,11 @@ public class Rooms {
         this.id = id;
     }
 
-    public user getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(user user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
@@ -83,6 +83,4 @@ public class Rooms {
     public void setFeatures(List<Features> features) {
         this.features = features;
     }
-
-
 }

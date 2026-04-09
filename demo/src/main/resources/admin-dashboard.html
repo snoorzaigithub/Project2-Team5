@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Dashboard</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Welcome Admin</h1>
+    <p>Admin login successful.</p>
+    <p th:if="${username}">
+        Logged in as: <strong th:text="${username}"></strong>
+    </p>
+</body>
+</html>
