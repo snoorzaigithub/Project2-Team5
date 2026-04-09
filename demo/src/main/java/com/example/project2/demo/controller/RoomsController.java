@@ -1,12 +1,12 @@
 package com.example.project2.demo.controller;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import com.example.project2.demo.model.Features;
 import com.example.project2.demo.model.Rooms;
 import com.example.project2.demo.service.FeaturesService;
 import com.example.project2.demo.service.RoomsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,12 +14,13 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class RoomsController {
+    private final RoomsService roomsService;
+    private final FeaturesService featuresService;
 
-    @Autowired
-    private RoomsService roomsService;
-
-    @Autowired
-    private FeaturesService featuresService;
+    public RoomsController(RoomsService roomsService, FeaturesService featuresService) {
+        this.roomsService = roomsService;
+        this.featuresService = featuresService;
+    }
 
     @GetMapping("/")
     public String index() {
@@ -52,12 +53,19 @@ public class RoomsController {
     @GetMapping("/admin/home/create")
     public String showCreateForm(Model model) {
         model.addAttribute("rooms", new Rooms());
+        model.addAttribute("features", new Features());
         return "create-rooms";
     }
 
     @PostMapping("/admin/home/create")
-    public String createRoom(Rooms rooms) {
-        roomsService.createRoom(rooms);
+    public String createRoom(Rooms room, Features feature) {
+        Rooms createdRoom = roomsService.createRoom(room);
+
+        if (feature != null) {
+            feature.setRoom(createdRoom);
+            featuresService.updateFeatures(feature);
+        }
+
         return "redirect:/admin/home";
     }
 
@@ -69,23 +77,33 @@ public class RoomsController {
     }
 
     @PostMapping("/admin/rooms/{id}/edit")
-    public String updateRoom(Rooms rooms, Features features) {
-        roomsService.updateRoom(rooms);
-        featuresService.updateFeatures(features);
+    public String updateRoom(Rooms room, Features feature) {
+        Rooms updatedRoom = roomsService.updateRoom(room);
+        if (feature != null) {
+            feature.setRoom(updatedRoom);
+            featuresService.updateFeatures(feature);
+        }
         return "redirect:/admin/home";
     }
 
     @PostMapping("/admin/rooms/{id}/delete")
     public String deleteRoom(@PathVariable Long id) {
         roomsService.deleteRoom(id);
+        featuresService.deleteFeaturesByRoomId(id);
         return "redirect:/admin/home";
     }
 
     @PostMapping("/rooms/{id}/reserved")
     public ResponseEntity<Void> updateRoomReservation(@PathVariable Long id) {
-        Rooms rooms = roomsService.getRoomById(id);
-        rooms.getReserved().add(LocalDateTime.now());
-        roomsService.updateRoom(rooms);
+        Rooms room = roomsService.getRoomById(id);
+        if (room == null) {
+            return ResponseEntity.notFound().build();
+        }
+        if (room.getReserved() == null) {
+            room.setReserved(new ArrayList<>());
+        }
+        room.getReserved().add(LocalDateTime.now());
+        roomsService.updateRoom(room);
         return ResponseEntity.ok().build();
     }
 }

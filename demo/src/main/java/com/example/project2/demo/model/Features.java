@@ -6,8 +6,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Transient;
+import lombok.Data;
 
 @Entity
+@Data
 public class Features {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -21,66 +24,14 @@ public class Features {
 
     private boolean computer;
 
-    private boolean labortory;
+    private boolean laboratory;
 
     @ManyToOne
     @JoinColumn(name="rooms_id")
-    private user room;
+    private Rooms room;
 
-    public void setRoom(user room) {
-        this.room = room;
+    @Transient
+    public Long getRoomId() {
+        return room != null ? room.getId() : null;
     }
-
-    public user getRoom() {
-        return room;
-    }
-
-    public boolean isLabortory() {
-        return labortory;
-    }
-
-    public void setLabortory(boolean labortory) {
-        this.labortory = labortory;
-    }
-
-    public boolean isComputer() {
-        return computer;
-    }
-
-    public void setComputer(boolean computer) {
-        this.computer = computer;
-    }
-
-    public boolean isProjector() {
-        return projector;
-    }
-
-    public void setProjector(boolean projector) {
-        this.projector = projector;
-    }
-
-    public boolean isBlackboard() {
-        return blackboard;
-    }
-
-    public void setBlackboard(boolean blackboard) {
-        this.blackboard = blackboard;
-    }
-
-    public boolean isWhiteboard() {
-        return whiteboard;
-    }
-
-    public void setWhiteboard(boolean whiteboard) {
-        this.whiteboard = whiteboard;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
 }

@@ -4,7 +4,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,8 +15,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import lombok.Data;
 
 @Entity
+@Data
 public class Rooms {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -21,68 +26,24 @@ public class Rooms {
 
     @ManyToOne
     @JoinColumn(name="user_id")
-    private user user;
+    private User user;
 
     private int numberOfSeats;
 
     //List of times that the room isnt taken
 
+    @ElementCollection
+    @CollectionTable(name = "rooms_not_reserved", joinColumns = @JoinColumn(name = "room_id"))
+    @Column(name = "reserved_at")
     private List<LocalDateTime> notreserved;
 
     // List of times the room is taken 
 
+    @ElementCollection
+    @CollectionTable(name = "rooms_reserved", joinColumns = @JoinColumn(name = "room_id"))
+    @Column(name = "reserved_at")
     private List<LocalDateTime> reserved;
 
-    @OneToMany(mappedBy="rooms", cascade=CascadeType.ALL)
+    @OneToMany(mappedBy="room", cascade=CascadeType.ALL)
     private List<Features> features = new ArrayList<>();
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public user getUser() {
-        return user;
-    }
-
-    public void setUser(user user) {
-        this.user = user;
-    }
-
-    public int getNumberOfSeats() {
-        return numberOfSeats;
-    }
-
-    public void setNumberOfSeats(int numberOfSeats) {
-        this.numberOfSeats = numberOfSeats;
-    }
-
-    public List<LocalDateTime> getReserved() {
-        return reserved;
-    }
-
-    public void setReserved(List<LocalDateTime> reserved) {
-        this.reserved = reserved;
-    }
-
-    public List<LocalDateTime> getNotreserved() {
-        return notreserved;
-    }
-
-    public void setNotreserved(List<LocalDateTime> notreserved) {
-        this.notreserved = notreserved;
-    }
-
-    public List<Features> getFeatures() {
-        return features;
-    }
-
-    public void setFeatures(List<Features> features) {
-        this.features = features;
-    }
-
-
 }
