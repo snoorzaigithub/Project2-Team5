@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: room-access
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: room-access
+  template:
+    metadata:
+      labels:
+        app: room-access
+    spec:
+      containers:
+        - name: room-access
+          image: room-access:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: kubernetes
