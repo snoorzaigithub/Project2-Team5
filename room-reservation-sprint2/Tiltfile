@@ -1,0 +1,16 @@
+services = [
+    "config-service",
+    "edge-service",
+    "event-processor",
+    "overlap-engine",
+    "reservation-access",
+    "reservation-manager",
+    "room-access",
+    "room-manager",
+]
+
+for svc in services:
+    docker_build(svc, f"./{svc}")
+    k8s_yaml(f"./{svc}/k8s/deployment.yaml")
+    k8s_yaml(f"./{svc}/k8s/service.yaml")
+    k8s_resource(svc)
