@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: room-manager
-          image: room-manager:latest
+          image: room-manager
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080

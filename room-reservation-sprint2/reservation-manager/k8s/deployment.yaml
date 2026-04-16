@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: reservation-manager
-          image: reservation-manager:latest
+          image: reservation-manager
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080

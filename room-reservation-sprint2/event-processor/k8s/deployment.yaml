@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: event-processor
-          image: event-processor:latest
+          image: event-processor
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080

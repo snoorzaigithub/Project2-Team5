@@ -14,10 +14,7 @@ spec:
     spec:
       containers:
         - name: overlap-engine
-          image: overlap-engine:latest
-          imagePullPolicy: IfNotPresent
+          image: overlap-engine
+          imagePullPolicy: Never
           ports:
             - containerPort: 8080
-          env:
-            - name: SPRING_PROFILES_ACTIVE
-              value: kubernetes

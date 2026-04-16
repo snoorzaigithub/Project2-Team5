@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: edge-service
-          image: edge-service:latest
+          image: edge-service
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
