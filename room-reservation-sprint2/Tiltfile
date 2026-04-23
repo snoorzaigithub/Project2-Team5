@@ -13,4 +13,4 @@ for svc in services:
     docker_build(svc, "./" + svc)
     k8s_yaml("./" + svc + "/k8s/deployment.yaml")
     k8s_yaml("./" + svc + "/k8s/service.yaml")
-    k8s_resource(svc)
+    k8s_resource(svc, port_forwards=8080)
