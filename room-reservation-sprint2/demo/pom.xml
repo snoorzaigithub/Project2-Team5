@@ -112,7 +112,7 @@
 		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId name="spring-boot-starter-aop</artifactId>
+			<artifactId name=spring-boot-starter-aop</artifactId>
 		</dependency>
 	</dependencies>
 
