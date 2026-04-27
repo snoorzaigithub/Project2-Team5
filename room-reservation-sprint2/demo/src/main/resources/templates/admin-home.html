@@ -322,7 +322,7 @@
         <div class="room-card-header">
             <div>
                 <div class="room-name" th:text="${room.name}">Room Name</div>
-                <div class="room-meta">Capacity: <span th:text="${room.capacity}">0</span></div>
+                <div class="room-meta">Capacity: <span th:text="${room.numberOfSeats}">0</span></div>
             </div>
             <div class="menu-wrap" onclick="event.stopPropagation()">
                 <button class="dots-btn" onclick="toggleMenu(this)">•••</button>
@@ -340,10 +340,10 @@
 
         <div class="features">
             <th:block th:each="feature : ${features}" th:if="${feature.roomId == room.id}">
-                <span class="feature-pill active" th:if="${feature.wifi}"       >WiFi</span>
-                <span class="feature-pill active" th:if="${feature.projector}"  >Projector</span>
-                <span class="feature-pill active" th:if="${feature.whiteboard}" >Whiteboard</span>
-                <span class="feature-pill active" th:if="${feature.ac}"         >A/C</span>
+<span class="feature-pill active" th:if="${feature.elevatorAccess}">Elevator Access</span>
+<span class="feature-pill active" th:if="${feature.whiteboard}">Whiteboard</span>
+<span class="feature-pill active" th:if="${feature.projector}">Projector</span>
+<span class="feature-pill active" th:if="${feature.computerAccess}">Computer Access</span>
             </th:block>
         </div>
     </div>

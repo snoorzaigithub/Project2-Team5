@@ -4,11 +4,12 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.example.project2.demo.model.Features;
 import com.example.project2.demo.data.FeaturesRepository;
+import com.example.project2.demo.model.Features;
 
 @Service
 public class FeaturesService {
+
     private final FeaturesRepository featuresRepository;
 
     public FeaturesService(FeaturesRepository featuresRepository) {
@@ -20,7 +21,7 @@ public class FeaturesService {
     }
 
     public List<Features> getFeaturesByRoomId(Long roomId) {
-        return featuresRepository.findByRoomId(roomId);
+        return featuresRepository.findByRoom_Id(roomId);
     }
 
     public Features updateFeatures(Features updatedFeatures) {
@@ -28,6 +29,6 @@ public class FeaturesService {
     }
 
     public void deleteFeaturesByRoomId(Long roomId) {
-        featuresRepository.deleteByRoomId(roomId);
+        featuresRepository.deleteByRoom_Id(roomId);
     }
 }

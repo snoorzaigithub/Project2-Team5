@@ -1,12 +1,13 @@
 package com.example.project2.demo.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.example.project2.demo.model.Rooms;
 import com.example.project2.demo.data.RoomsRepository;
+import com.example.project2.demo.model.Rooms;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
@@ -34,11 +35,13 @@ public class RoomsService {
     @CircuitBreaker(name = ROOM_MANAGER_CB, fallbackMethod = "createRoomFallback")
     public Rooms createRoom(Rooms room) {
         if (room.getReserved() == null) {
-            room.setReserved(new ArrayList<>());
+            room.setReserved(new ArrayList<LocalDateTime>());
         }
+
         if (room.getNotreserved() == null) {
-            room.setNotreserved(new ArrayList<>());
+            room.setNotreserved(new ArrayList<LocalDateTime>());
         }
+
         return roomsRepository.save(room);
     }
 
@@ -52,9 +55,8 @@ public class RoomsService {
         roomsRepository.deleteById(id);
     }
 
-
     public List<Rooms> getAllRoomsFallback(Throwable t) {
-        return new ArrayList<>();
+        return new ArrayList<Rooms>();
     }
 
     public Rooms getRoomByIdFallback(Long id, Throwable t) {
@@ -70,7 +72,6 @@ public class RoomsService {
     }
 
     public void deleteRoomFallback(Long id, Throwable t) {
-        // no-op: silently absorb the failure
+      
     }
 }
-
