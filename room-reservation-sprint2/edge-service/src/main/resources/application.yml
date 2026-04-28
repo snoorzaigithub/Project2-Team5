@@ -7,6 +7,9 @@ spring:
     name: edge-service
   config:
     import: optional:configserver:http://config-service:8888
+  redis:
+    host: redis
+    port: 6379
 
 management:
   endpoints:
@@ -14,5 +17,9 @@ management:
       exposure:
         include: health,info
 
+
+
 spring.lifecycle:
   timeout-per-shutdown-phase: 20s
+
+
