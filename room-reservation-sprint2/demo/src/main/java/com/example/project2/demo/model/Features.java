@@ -1,37 +1,28 @@
 package com.example.project2.demo.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Transient;
+import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity
 @Data
 public class Features {
+
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    private boolean elevatorAccess;
     private boolean whiteboard;
-    
-    private boolean blackboard;
-
     private boolean projector;
+    private boolean computerAccess;
+    private boolean largeTable;
+    private boolean quietRoom;
 
-    private boolean computer;
-
-    private boolean laboratory;
-
-    @ManyToOne
-    @JoinColumn(name="rooms_id")
+    @OneToOne
+    @JoinColumn(name = "room_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Rooms room;
-
-    @Transient
-    public Long getRoomId() {
-        return room != null ? room.getId() : null;
-    }
 }
