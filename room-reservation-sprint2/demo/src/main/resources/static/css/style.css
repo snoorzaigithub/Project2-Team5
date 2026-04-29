@@ -141,3 +141,42 @@ label {
     display: inline-block;
     font-size: 18px;
 }
+/* Login Page Styling */
+.login-card {
+    max-width: 520px;
+    margin-top: 80px;
+}
+
+.login-card h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.login-card p {
+    color: #d1d5db;
+    margin-bottom: 25px;
+}
+
+.login-form {
+    width: 100%;
+}
+
+.login-form input {
+    width: 100%;
+}
+
+.login-form button {
+    width: 100%;
+}
+
+.back-link {
+    color: #86efac;
+    margin-top: 20px;
+    display: inline-block;
+    font-size: 18px;
+    text-decoration: none;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
