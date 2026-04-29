@@ -1,11 +1,8 @@
 package com.example.project2.demo.service;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
-import com.example.project2.demo.data.FeaturesRepository;
 import com.example.project2.demo.model.Features;
+import com.example.project2.demo.data.FeaturesRepository;
+import org.springframework.stereotype.Service;
 
 @Service
 public class FeaturesService {
@@ -16,19 +13,7 @@ public class FeaturesService {
         this.featuresRepository = featuresRepository;
     }
 
-    public List<Features> getAllFeatures() {
-        return featuresRepository.findAll();
-    }
-
-    public List<Features> getFeaturesByRoomId(Long roomId) {
-        return featuresRepository.findByRoom_Id(roomId);
-    }
-
-    public Features updateFeatures(Features updatedFeatures) {
-        return featuresRepository.save(updatedFeatures);
-    }
-
-    public void deleteFeaturesByRoomId(Long roomId) {
-        featuresRepository.deleteByRoom_Id(roomId);
+    public Features save(Features features) {
+        return featuresRepository.save(features);
     }
 }

@@ -1,20 +1,13 @@
 package com.example.project2.demo.service;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.example.project2.demo.model.Rooms;
+import com.example.project2.demo.data.RoomsRepository;
 import org.springframework.stereotype.Service;
 
-import com.example.project2.demo.data.RoomsRepository;
-import com.example.project2.demo.model.Rooms;
-
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import java.util.List;
 
 @Service
 public class RoomsService {
-
-    private static final String ROOM_MANAGER_CB = "roomManager";
 
     private final RoomsRepository roomsRepository;
 
@@ -22,56 +15,33 @@ public class RoomsService {
         this.roomsRepository = roomsRepository;
     }
 
-    @CircuitBreaker(name = ROOM_MANAGER_CB, fallbackMethod = "getAllRoomsFallback")
     public List<Rooms> getAllRooms() {
         return roomsRepository.findAll();
     }
 
-    @CircuitBreaker(name = ROOM_MANAGER_CB, fallbackMethod = "getRoomByIdFallback")
     public Rooms getRoomById(Long id) {
         return roomsRepository.findById(id).orElse(null);
     }
 
-    @CircuitBreaker(name = ROOM_MANAGER_CB, fallbackMethod = "createRoomFallback")
-    public Rooms createRoom(Rooms room) {
-        if (room.getReserved() == null) {
-            room.setReserved(new ArrayList<LocalDateTime>());
-        }
-
-        if (room.getNotreserved() == null) {
-            room.setNotreserved(new ArrayList<LocalDateTime>());
-        }
-
+    public Rooms saveRoom(Rooms room) {
         return roomsRepository.save(room);
     }
 
-    @CircuitBreaker(name = ROOM_MANAGER_CB, fallbackMethod = "updateRoomFallback")
-    public Rooms updateRoom(Rooms updatedRoom) {
-        return createRoom(updatedRoom);
+    public Rooms createRoom(Rooms room) {
+        return roomsRepository.save(room);
     }
 
-    @CircuitBreaker(name = ROOM_MANAGER_CB, fallbackMethod = "deleteRoomFallback")
+    public Rooms updateRoom(Rooms room) {
+        return roomsRepository.save(room);
+    }
+
     public void deleteRoom(Long id) {
         roomsRepository.deleteById(id);
     }
 
-    public List<Rooms> getAllRoomsFallback(Throwable t) {
-        return new ArrayList<Rooms>();
-    }
-
-    public Rooms getRoomByIdFallback(Long id, Throwable t) {
-        return null;
-    }
-
-    public Rooms createRoomFallback(Rooms room, Throwable t) {
-        return null;
-    }
-
-    public Rooms updateRoomFallback(Rooms updatedRoom, Throwable t) {
-        return null;
-    }
-
-    public void deleteRoomFallback(Long id, Throwable t) {
-      
+    public void bookRoom(Long id) {
+        Rooms room = roomsRepository.findById(id).orElseThrow();
+        room.setBooked(true);
+        roomsRepository.save(room);
     }
 }

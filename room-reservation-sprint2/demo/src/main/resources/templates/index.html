@@ -1,17 +1,49 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Room Reservation</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-    <h1>Room Reservation System</h1>
 
-    <a href="/home">
-        <button>Home - Book a Room</button>
-    </a>
+<div class="page">
+    <div class="hero-card">
+        <h1>Room Reservation Application</h1>
+        <p>Find and book a room easily.</p>
 
-    <a href="/admin/home">
-        <button>Login as Admin</button>
-    </a>
+        <div class="button-row">
+            <a href="/signup" class="btn green">Sign Up as Client</a>
+            <a href="/login" class="btn dark">Login as Admin</a>
+        </div>
+    </div>
+
+    <section class="rooms-section">
+        <h2>Available Rooms</h2>
+
+        <div class="rooms-grid">
+            <div class="room-card" th:each="room : ${rooms}">
+                <h3 th:text="${room.name}"></h3>
+
+                <p><strong>Seats:</strong> <span th:text="${room.numberOfSeats}"></span></p>
+
+                <ul>
+                    <li th:if="${room.elevatorAccess}">Elevator Access</li>
+                    <li th:if="${room.projector}">Projector</li>
+                    <li th:if="${room.whiteboard}">Whiteboard</li>
+                    <li th:if="${room.computerAccess}">Computer Access</li>
+                    <li th:if="${room.largeTable}">Large Table</li>
+                    <li th:if="${room.quietRoom}">Quiet Room</li>
+                </ul>
+
+                <p th:if="${room.booked}" class="booked">Booked</p>
+
+                <form th:if="${!room.booked}" th:action="@{/book/{id}(id=${room.id})}" method="post">
+                    <button class="btn green" type="submit">Book Room</button>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>
+
 </body>
 </html>
