@@ -48,4 +48,17 @@ public class RoomController {
         room.setStatus(status);
         return service.save(room);
     }
+    @PatchMapping("/{id}/features")
+    public Room addFeatures(@PathVariable Long id, @RequestBody String features){
+        Room room = service.findById(id).orElseThrow();
+        room.getFeatures().add(features);
+        return service.save(room);
+    }
+    
+    @DeleteMapping("/{id}/features")
+    public Room deleteFeatures(@PathVariable Long id, @RequestBody String features){
+        Room room = service.findById(id).orElseThrow();
+        room.getFeatures().remove(features);
+        return service.save(room);
+    }
 }
