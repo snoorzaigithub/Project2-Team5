@@ -6,10 +6,9 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 @Component
-public class StrictOverlapStrategy implements OverlapStrategy {
+public class BufferOverlapStrategy implements OverlapStrategy {
     @Override
     public List<Long> findConflicts(
             Long roomId,
@@ -24,10 +23,7 @@ public class StrictOverlapStrategy implements OverlapStrategy {
         }
 
         for (ReservationWindow reservation : existingReservations) {
-            if (reservation == null
-                    || reservation.roomId() == null
-                    || reservation.start() == null
-                    || reservation.end() == null) {
+            if (reservation == null || reservation.roomId() == null || reservation.start() == null || reservation.end() == null) {
                 continue;
             }
 
@@ -35,24 +31,18 @@ public class StrictOverlapStrategy implements OverlapStrategy {
                 continue;
             }
 
-            if (!isBlocking(reservation.status())) {
+            if ("CANCELLED".equalsIgnoreCase(reservation.status()) || "REJECTED".equalsIgnoreCase(reservation.status())) {
                 continue;
             }
 
-            if (requestedStart.isBefore(reservation.end()) && requestedEnd.isAfter(reservation.start())) {
+            LocalDateTime bufferedStart = reservation.start().minusMinutes(15);
+            LocalDateTime bufferedEnd = reservation.end().plusMinutes(15);
+
+            if (requestedStart.isBefore(bufferedEnd) && requestedEnd.isAfter(bufferedStart)) {
                 conflicts.add(reservation.id());
             }
         }
 
         return conflicts;
-    }
-
-    private boolean isBlocking(String status) {
-        if (status == null) {
-            return true;
-        }
-
-        String normalized = status.toUpperCase(Locale.ROOT);
-        return !normalized.equals("CANCELLED") && !normalized.equals("REJECTED");
     }
 }
