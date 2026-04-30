@@ -42,7 +42,6 @@ public class RoomManagerService {
         client.delete(id);
     }
 
-    // --- Fallback methods ---
 
     public List<Room> getAllRoomsFallback(Throwable t) {
         // UI shows no rooms available
