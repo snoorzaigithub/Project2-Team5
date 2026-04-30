@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Admin Panel</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/style.css}">
 </head>
 <body>
 
@@ -18,7 +18,7 @@
 
         <form th:action="@{/admin/add}" th:object="${room}" method="post">
             <input type="text" th:field="*{name}" placeholder="Room name" required>
-            <input type="number" th:field="*{numberOfSeats}" placeholder="Number of seats" required>
+            <input type="number" th:field="*{seats}" placeholder="Number of seats" required>
 
             <label><input type="checkbox" th:field="*{elevatorAccess}"> Elevator Access</label>
             <label><input type="checkbox" th:field="*{projector}"> Projector</label>
@@ -37,7 +37,10 @@
         <div class="rooms-grid">
             <div class="room-card" th:each="room : ${rooms}">
                 <h3 th:text="${room.name}"></h3>
-                <p><strong>Seats:</strong> <span th:text="${room.numberOfSeats}"></span></p>
+                <p><strong>Seats:</strong> <span th:text="${room.seats}"></span></p>
+
+                <p th:if="${room.booked}" class="booked">Booked</p>
+                <p th:if="${!room.booked}" class="available">Available</p>
 
                 <form th:action="@{/admin/delete/{id}(id=${room.id})}" method="post">
                     <button class="btn danger" type="submit">Remove Room</button>

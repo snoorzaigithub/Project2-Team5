@@ -2,9 +2,12 @@ package com.example.project2.demo.controller;
 
 import com.example.project2.demo.model.Rooms;
 import com.example.project2.demo.service.RoomsService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 
 @Controller
 public class RoomsController {
@@ -47,8 +50,22 @@ public class RoomsController {
     }
 
     @PostMapping("/book/{id}")
-    public String bookRoom(@PathVariable Long id) {
-        roomsService.bookRoom(id);
+    public String bookRoom(
+            @PathVariable Long id,
+            @RequestParam("startTime")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+            LocalDateTime startTime,
+            @RequestParam("endTime")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+            LocalDateTime endTime
+    ) {
+        roomsService.bookRoom(id, startTime, endTime);
+        return "redirect:/";
+    }
+
+    @PostMapping("/cancel/{id}")
+    public String cancelBooking(@PathVariable Long id) {
+        roomsService.cancelBooking(id);
         return "redirect:/";
     }
 }
