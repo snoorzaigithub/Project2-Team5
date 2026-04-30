@@ -1,16 +1,20 @@
 package com.example.reservation_manager.messaging;
 
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.rabbit.core.RabbitOperations;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ReservationEventPublisher {
-    private final  RabbitTemplate rabbitTemplate;
+    private final RabbitOperations rabbitTemplate;
 
-    public ReservationEventPublisher(RabbitTemplate rabbitTemplate) {
+    public ReservationEventPublisher(RabbitOperations rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
     }
-    //public void publishReservationCreated(Reservation reservation){
-      //  ReservationCreatedEvent event = new ReserverationCreatedEvent(reservation.getId(), reservation.getStatus()){
 
-        //}
-    //}
+    public void publishReservationCreated(Long reservationId, Long roomId, Long userId, String status) {
+        rabbitTemplate.convertAndSend(
+                RabbitMQConfig.RESERVATION_EXCHANGE,
+                ReservationEventTopics.CREATED,
+                reservationId + "," + roomId + "," + userId + "," + status);
+    }
 }

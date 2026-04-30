@@ -4,6 +4,11 @@ server:
 spring:
   application:
     name: reservation-manager
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: guest
+    password: guest
 
 management:
   endpoints:

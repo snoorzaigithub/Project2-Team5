@@ -15,3 +15,4 @@ for svc in services:
     k8s_yaml("./" + svc + "/k8s/service.yaml")
     k8s_resource(svc)
 k8s_yaml('k8s/postgres.yaml')
+k8s_yaml('k8s/rabbitmq.yaml')
