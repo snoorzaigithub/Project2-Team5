@@ -3,7 +3,7 @@ package com.example.project2.demo.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 public class LoginController {
 
     @GetMapping("/login")
