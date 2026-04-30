@@ -1,5 +1,6 @@
 package com.example.edge_service.config;
 
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -20,37 +21,42 @@ public class SecurityConfig {
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(
             ServerHttpSecurity http,
-            ReactiveClientRegistrationRepository clientRegistrationRepository) {
+            ObjectProvider<ReactiveClientRegistrationRepository> clientRegistrationRepositoryProvider) {
 
-        //RP-Initiated Logout handler — redirects to Keycloak logout endpoint
-        OidcClientInitiatedServerLogoutSuccessHandler logoutHandler =
-            new OidcClientInitiatedServerLogoutSuccessHandler(clientRegistrationRepository);
-        logoutHandler.setPostLogoutRedirectUri("{baseUrl}");
+        ReactiveClientRegistrationRepository clientRegistrationRepository =
+            clientRegistrationRepositoryProvider.getIfAvailable();
+        boolean keycloakEnabled = clientRegistrationRepository != null;
 
-        return http
-            //HTTP 401 for unauthenticated AJAX instead of redirect to login
+        http
             .exceptionHandling(ex -> ex
                 .authenticationEntryPoint(
                     new HttpStatusServerEntryPoint(HttpStatus.UNAUTHORIZED))
             )
-            .authorizeExchange(exchanges -> exchanges
-                // Kubernetes health probes must be public
-                .pathMatchers("/actuator/health", "/actuator/info").permitAll()
-                .anyExchange().authenticated()
-            )
-            //OIDC login
-            .oauth2Login(Customizer.withDefaults())
-            //RP-Initiated Logout with {baseUrl}
-            .logout(logout -> logout
-                .logoutSuccessHandler(logoutHandler)
-            )
-            //Cookie-based CSRF with WebFilter subscription
             .csrf(csrf -> csrf
                 .csrfTokenRepository(CookieServerCsrfTokenRepository.withHttpOnlyFalse())
                 .csrfTokenRequestHandler(new ServerCsrfTokenRequestAttributeHandler())
             )
-            //SaveSession filter — persists session before forwarding
-            .requestCache(Customizer.withDefaults())
-            .build();
+            .requestCache(Customizer.withDefaults());
+
+        if (keycloakEnabled) {
+            OidcClientInitiatedServerLogoutSuccessHandler logoutHandler =
+                new OidcClientInitiatedServerLogoutSuccessHandler(clientRegistrationRepository);
+            logoutHandler.setPostLogoutRedirectUri("{baseUrl}");
+
+            http
+                .authorizeExchange(exchanges -> exchanges
+                    .pathMatchers("/actuator/health", "/actuator/info").permitAll()
+                    .anyExchange().authenticated()
+                )
+                .oauth2Login(Customizer.withDefaults())
+                .logout(logout -> logout.logoutSuccessHandler(logoutHandler));
+        } else {
+            http.authorizeExchange(exchanges -> exchanges
+                .pathMatchers("/actuator/health", "/actuator/info").permitAll()
+                .anyExchange().permitAll()
+            );
+        }
+
+        return http.build();
     }
 }

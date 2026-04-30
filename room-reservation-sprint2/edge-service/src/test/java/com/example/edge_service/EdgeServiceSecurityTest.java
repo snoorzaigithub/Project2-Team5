@@ -180,8 +180,6 @@ public class EdgeServiceSecurityTest {
                 );
     }
 
-    /
-
     // Logout must redirect — RP-Initiated Logout sends user to Keycloak logout endpoint
     @Test
     void logout_withCsrf_redirectsToKeycloak() {
