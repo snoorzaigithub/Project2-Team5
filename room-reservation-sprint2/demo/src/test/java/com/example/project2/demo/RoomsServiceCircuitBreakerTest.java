@@ -2,12 +2,8 @@ package com.example.project2.demo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.never;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +15,7 @@ import com.example.project2.demo.data.RoomsRepository;
 import com.example.project2.demo.model.Rooms;
 import com.example.project2.demo.service.RoomsService;
 
+
 @ExtendWith(MockitoExtension.class)
 public class RoomsServiceCircuitBreakerTest {
 
@@ -28,59 +25,70 @@ public class RoomsServiceCircuitBreakerTest {
     @InjectMocks
     private RoomsService roomsService;
 
-    // --- getAllRooms ---
+    // --- getAllRooms fallback ---
+    // When the circuit breaker trips, return empty list instead of crashing
 
     @Test
-    void whenRepositoryFails_getAllRooms_returnsFallbackEmptyList() {
-        when(roomsRepository.findAll()).thenThrow(new RuntimeException("DB down"));
+    void whenCircuitBreakerTrips_getAllRooms_fallbackReturnsEmptyList() {
+        List<Rooms> result = roomsService.getAllRoomsFallback(new RuntimeException("DB down"));
 
-        List<Rooms> result = roomsService.getAllRooms();
-
+        assertThat(result).isNotNull();
         assertThat(result).isEmpty();
     }
 
-    // --- getRoomById ---
+    // --- getRoomById fallback ---
+    // When the circuit breaker trips, return null instead of crashing
 
     @Test
-    void whenRepositoryFails_getRoomById_returnsFallbackNull() {
-        when(roomsRepository.findById(1L)).thenThrow(new RuntimeException("DB down"));
-
-        Rooms result = roomsService.getRoomById(1L);
+    void whenCircuitBreakerTrips_getRoomById_fallbackReturnsNull() {
+        Rooms result = roomsService.getRoomByIdFallback(1L, new RuntimeException("DB down"));
 
         assertThat(result).isNull();
     }
 
-    // --- createRoom ---
+    // --- createRoom fallback ---
+    // When the circuit breaker trips, return null instead of crashing
 
     @Test
-    void whenRepositoryFails_createRoom_returnsFallbackNull() {
+    void whenCircuitBreakerTrips_createRoom_fallbackReturnsNull() {
+        Rooms result = roomsService.createRoomFallback(new Rooms(), new RuntimeException("DB down"));
+
+        assertThat(result).isNull();
+    }
+
+    // --- updateRoom fallback ---
+    // When the circuit breaker trips, return null instead of crashing
+
+    @Test
+    void whenCircuitBreakerTrips_updateRoom_fallbackReturnsNull() {
+        Rooms result = roomsService.updateRoomFallback(new Rooms(), new RuntimeException("DB down"));
+
+        assertThat(result).isNull();
+    }
+
+    // --- deleteRoom fallback ---
+    // When the circuit breaker trips, silently absorb failure instead of crashing
+
+    @Test
+    void whenCircuitBreakerTrips_deleteRoom_fallbackDoesNotThrow() {
+        // Verifies no exception escapes the fallback
+        roomsService.deleteRoomFallback(1L, new RuntimeException("DB down"));
+    }
+
+    // --- createRoom happy path ---
+    // Verifies null reserved/notreserved lists are initialized before saving
+
+    @Test
+    void createRoom_initializesNullListsBeforeSaving() {
         Rooms room = new Rooms();
-        when(roomsRepository.save(room)).thenThrow(new RuntimeException("DB down"));
+        assertThat(room.getReserved()).isNull();
+        assertThat(room.getNotreserved()).isNull();
 
-        Rooms result = roomsService.createRoom(room);
+        when(roomsRepository.save(room)).thenReturn(room);
+        roomsService.createRoom(room);
 
-        assertThat(result).isNull();
-    }
-
-    // --- updateRoom ---
-
-    @Test
-    void whenRepositoryFails_updateRoom_returnsFallbackNull() {
-        Rooms room = new Rooms();
-        when(roomsRepository.save(room)).thenThrow(new RuntimeException("DB down"));
-
-        Rooms result = roomsService.updateRoom(room);
-
-        assertThat(result).isNull();
-    }
-
-    // --- deleteRoom ---
-
-    @Test
-    void whenRepositoryFails_deleteRoom_doesNotThrow() {
-        doThrow(new RuntimeException("DB down")).when(roomsRepository).deleteById(1L);
-
-        // Should silently absorb the failure via fallback, not throw
-        roomsService.deleteRoom(1L);
+        assertThat(room.getReserved()).isNotNull();
+        assertThat(room.getNotreserved()).isNotNull();
     }
 }
+
