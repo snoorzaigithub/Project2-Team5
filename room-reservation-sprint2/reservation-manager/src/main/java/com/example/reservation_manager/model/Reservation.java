@@ -2,10 +2,12 @@ package com.example.reservation_manager.model;
 
 import java.time.LocalDateTime;
 
-public record ReservationRequest(
+public record Reservation(
+        Long id,
         Long roomId,
         Long userId,
-        LocalDateTime requestedStart,
-        LocalDateTime requestedEnd
+        LocalDateTime start,
+        LocalDateTime end,
+        String status
 ) {
 }

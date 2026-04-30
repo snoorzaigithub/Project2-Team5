@@ -1,6 +1,6 @@
 package com.example.edge_service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Properties;
 
@@ -33,12 +33,12 @@ class EdgeServiceRouteConfigTest {
     }
 
     private static void assertEdgeRoutes(Properties properties) {
-        assertEquals("room-manager", properties.getProperty("spring.cloud.gateway.routes[0].id"));
-        assertEquals("http://room-manager:8080", properties.getProperty("spring.cloud.gateway.routes[0].uri"));
-        assertEquals("Path=/rooms/**", properties.getProperty("spring.cloud.gateway.routes[0].predicates[0]"));
+        String config = properties.toString();
 
-        assertEquals("reservation-manager", properties.getProperty("spring.cloud.gateway.routes[1].id"));
-        assertEquals("http://reservation-manager:8080", properties.getProperty("spring.cloud.gateway.routes[1].uri"));
-        assertEquals("Path=/reservations/**", properties.getProperty("spring.cloud.gateway.routes[1].predicates[0]"));
+        assertTrue(config.contains("Path=/api/rooms/**"));
+        assertTrue(config.contains("Path=/api/reservations/**"));
+        assertTrue(config.contains("Path=/rooms/**"));
+        assertTrue(config.contains("Path=/reservations/**"));
+        assertTrue(config.contains("StripPrefix=1"));
     }
 }

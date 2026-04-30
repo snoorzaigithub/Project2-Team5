@@ -46,6 +46,11 @@ public class ReservationAccessController {
         return service.updateStatus(id, status).orElseThrow();
     }
 
+    @PostMapping("/{id}/status")
+    public Reservation updateStatusPost(@PathVariable Long id, @RequestBody String status) {
+        return service.updateStatus(id, status).orElseThrow();
+    }
+
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         service.delete(id);

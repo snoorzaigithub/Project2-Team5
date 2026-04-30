@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
     public static final String RESERVATION_EXCHANGE = "reservation.exchange";
-    public static final String RESERVATION_CREATED_QUEUE = "event-processor.reservation-created";
-    public static final String RESERVATION_CREATED_KEY = "reservation.created";
+    public static final String RESERVATION_CONFIRMED_QUEUE = "event-processor.reservation-confirmed";
+    public static final String RESERVATION_CONFIRMED_KEY = "reservation.confirmed";
     public static final String CONFIRMATION_LOGGED_KEY = "confirmation.logged";
 
     @Bean
@@ -20,14 +20,14 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue reservationCreatedQueue() {
-        return new Queue(RESERVATION_CREATED_QUEUE);
+    public Queue reservationConfirmedQueue() {
+        return new Queue(RESERVATION_CONFIRMED_QUEUE);
     }
 
     @Bean
-    public Binding reservationCreatedBinding(Queue reservationCreatedQueue, TopicExchange reservationExchange) {
-        return BindingBuilder.bind(reservationCreatedQueue)
+    public Binding reservationConfirmedBinding(Queue reservationConfirmedQueue, TopicExchange reservationExchange) {
+        return BindingBuilder.bind(reservationConfirmedQueue)
                 .to(reservationExchange)
-                .with(RESERVATION_CREATED_KEY);
+                .with(RESERVATION_CONFIRMED_KEY);
     }
 }

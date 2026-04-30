@@ -1,5 +1,7 @@
 package com.example.reservation_access.Model;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -13,6 +15,12 @@ public class Reservation {
     private Long id;
 
     private Long roomId;
+
+    private Long userId;
+
+    private LocalDateTime start;
+
+    private LocalDateTime end;
 
     private String status;
 
@@ -30,6 +38,30 @@ public class Reservation {
 
     public void setRoomId(Long roomId) {
         this.roomId = roomId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public LocalDateTime getStart() {
+        return start;
+    }
+
+    public void setStart(LocalDateTime start) {
+        this.start = start;
+    }
+
+    public LocalDateTime getEnd() {
+        return end;
+    }
+
+    public void setEnd(LocalDateTime end) {
+        this.end = end;
     }
 
     public String getStatus() {

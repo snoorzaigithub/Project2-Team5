@@ -2,27 +2,31 @@ package com.example.reservation_manager.Controller;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.reservation_manager.messaging.ReservationEventPublisher;
+import com.example.reservation_manager.model.Reservation;
+import com.example.reservation_manager.model.ReservationRequest;
+import com.example.reservation_manager.Service.ReservationService;
 
 
 @RestController
 @RequestMapping("/reservations")
 public class ReservationManagerController {
-    private final ReservationEventPublisher eventPublisher;
+    private final ReservationService reservationService;
 
-    public ReservationManagerController(ReservationEventPublisher eventPublisher) {
-        this.eventPublisher = eventPublisher;
+    public ReservationManagerController(ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
 
-    @PostMapping("/{id}/events/created")
-    public void publishCreated(
-            @PathVariable Long id,
-            @RequestParam Long roomId,
-            @RequestParam Long userId) {
-        eventPublisher.publishReservationCreated(id, roomId, userId, "PENDING");
+    @PostMapping
+    public Reservation reserve(@RequestBody ReservationRequest request) {
+        return reservationService.reserve(request);
+    }
+
+    @PostMapping("/{id}/confirm")
+    public Reservation confirm(@PathVariable Long id) {
+        return reservationService.confirm(id);
     }
 }

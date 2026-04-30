@@ -17,4 +17,11 @@ public class ReservationEventPublisher {
                 ReservationEventTopics.CREATED,
                 reservationId + "," + roomId + "," + userId + "," + status);
     }
+
+    public void publishReservationConfirmed(Long reservationId, Long roomId, Long userId) {
+        rabbitTemplate.convertAndSend(
+                RabbitMQConfig.RESERVATION_EXCHANGE,
+                ReservationEventTopics.CONFIRMED,
+                reservationId + "," + roomId + "," + userId + ",CONFIRMED");
+    }
 }
