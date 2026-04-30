@@ -18,7 +18,7 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args) {
         if (roomsRepository.count() > 0) return;
 
-        addRoom("Green Study Room", 6, true, true, true, true, true, true);
+        addRoom("Study Room", 6, true, true, true, true, true, true);
         addRoom("Business Meeting Room", 12, true, true, true, true, true, false);
         addRoom("Quiet Reading Room", 4, false, false, true, false, false, true);
         addRoom("Computer Lab Room", 20, true, true, true, true, true, false);
@@ -30,7 +30,9 @@ public class DataLoader implements CommandLineRunner {
 
         Rooms room = new Rooms();
         room.setName(name);
-        room.setNumberOfSeats(seats);
+
+        room.setSeats(seats);
+
         room.setElevatorAccess(elevator);
         room.setProjector(projector);
         room.setWhiteboard(whiteboard);
