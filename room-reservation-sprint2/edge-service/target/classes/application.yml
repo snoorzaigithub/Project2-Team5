@@ -13,6 +13,18 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: api-room-manager
+          uri: http://room-manager:8080
+          predicates:
+            - Path=/api/rooms/**
+          filters:
+            - StripPrefix=1
+        - id: api-reservation-manager
+          uri: http://reservation-manager:8080
+          predicates:
+            - Path=/api/reservations/**
+          filters:
+            - StripPrefix=1
         - id: room-manager
           uri: http://room-manager:8080
           predicates:
